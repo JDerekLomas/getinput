@@ -174,7 +174,7 @@ export default function InputWidget({
       setActiveElement(target);
       setOriginalText(target.textContent || "");
       target.contentEditable = "true";
-      target.style.outline = "2px solid #f59e0b";
+      target.style.outline = "2px solid #b45309";
       target.style.outlineOffset = "2px";
       target.focus();
 
@@ -203,7 +203,7 @@ export default function InputWidget({
       target.addEventListener("blur", handleBlur);
     } else if (mode === "commenting") {
       setActiveElement(target);
-      target.style.outline = "2px solid #3b82f6";
+      target.style.outline = "2px solid #2563eb";
       target.style.outlineOffset = "2px";
       setComment("");
       setTimeout(() => commentInputRef.current?.focus(), 50);
@@ -261,31 +261,31 @@ export default function InputWidget({
       className="fixed bottom-4 right-4 z-[9999] font-sans"
     >
       {showToast && (
-        <div className="absolute bottom-16 right-0 rounded bg-green-600 px-3 py-2 text-sm text-white shadow-lg">
+        <div className="absolute bottom-16 right-0 rounded-lg bg-green-600 px-3 py-2 text-sm text-white shadow-lg">
           {toastMessage}
         </div>
       )}
 
       {/* Onboarding tooltip */}
       {showOnboarding && mode === "idle" && !activeElement && (
-        <div className="absolute bottom-14 right-0 w-64 rounded-lg bg-gray-800 p-3 shadow-xl border border-gray-700">
+        <div className="absolute bottom-14 right-0 w-64 rounded-lg bg-white p-3 shadow-xl border border-[#e7e5e4]">
           <div className="flex items-start gap-2 mb-2">
-            <span className="text-amber-400 text-lg">&#9998;</span>
+            <span className="text-[#b45309] text-lg">&#9998;</span>
             <div>
-              <p className="text-sm font-medium text-white">Leave feedback on this page</p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-sm font-medium text-[#1c1917]">Leave feedback on this page</p>
+              <p className="text-xs text-[#57534e] mt-1">
                 Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback syncs with Claude Code.
               </p>
             </div>
           </div>
           <button
             onClick={dismissOnboarding}
-            className="w-full mt-2 text-xs text-gray-400 hover:text-white py-1"
+            className="w-full mt-2 text-xs text-[#a8a29e] hover:text-[#57534e] py-1"
           >
             Got it
           </button>
           {/* Arrow pointing down */}
-          <div className="absolute -bottom-2 right-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800" />
+          <div className="absolute -bottom-2 right-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-white" />
         </div>
       )}
 
@@ -296,8 +296,8 @@ export default function InputWidget({
               handleFirstAction();
               setMode("editing");
             }}
-            className={`flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-amber-500 ${
-              showOnboarding ? "animate-pulse ring-2 ring-amber-400 ring-offset-2 ring-offset-gray-950" : ""
+            className={`flex items-center gap-2 rounded-full bg-[#b45309] px-4 py-2 text-sm font-medium text-white shadow-lg hover:opacity-90 ${
+              showOnboarding ? "animate-pulse ring-2 ring-[#b45309]/50 ring-offset-2" : ""
             }`}
             title="Click text to edit it directly"
           >
@@ -321,7 +321,7 @@ export default function InputWidget({
               handleFirstAction();
               setMode("commenting");
             }}
-            className={`flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-blue-500 ${
+            className={`flex items-center gap-2 rounded-full bg-[#2563eb] px-4 py-2 text-sm font-medium text-white shadow-lg hover:opacity-90 ${
               showOnboarding ? "animate-pulse" : ""
             }`}
             title="Click any element to leave a comment"
@@ -344,7 +344,7 @@ export default function InputWidget({
           {inputCount > 0 && (
             <button
               onClick={() => setMode("viewing")}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 text-xs text-gray-300 hover:bg-gray-600 transition"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5f5f4] text-xs text-[#57534e] hover:bg-[#e7e5e4] transition border border-[#e7e5e4]"
               title="View feedback"
             >
               {inputCount}
@@ -354,15 +354,15 @@ export default function InputWidget({
       )}
 
       {(mode === "editing" || mode === "commenting") && !activeElement && (
-        <div className="rounded-lg bg-gray-900 p-4 shadow-xl">
-          <p className="mb-2 text-sm text-white">
+        <div className="rounded-lg bg-white p-4 shadow-xl border border-[#e7e5e4]">
+          <p className="mb-2 text-sm text-[#1c1917]">
             {mode === "editing"
               ? "Click any text to edit it directly"
               : "Click any element to leave a comment"}
           </p>
           <button
             onClick={() => setMode("idle")}
-            className="text-sm text-gray-400 hover:text-white"
+            className="text-sm text-[#a8a29e] hover:text-[#57534e]"
           >
             Cancel
           </button>
@@ -370,8 +370,8 @@ export default function InputWidget({
       )}
 
       {mode === "commenting" && activeElement && (
-        <div className="w-72 rounded-lg bg-gray-900 p-4 shadow-xl">
-          <p className="mb-2 truncate text-xs text-gray-400">
+        <div className="w-72 rounded-lg bg-white p-4 shadow-xl border border-[#e7e5e4]">
+          <p className="mb-2 truncate text-xs text-[#a8a29e]">
             {activeElement.textContent?.slice(0, 50) ||
               getSelector(activeElement)}
           </p>
@@ -380,7 +380,7 @@ export default function InputWidget({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="What should change?"
-            className="mb-3 w-full rounded border border-gray-700 bg-gray-800 p-2 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+            className="mb-3 w-full rounded border border-[#e7e5e4] bg-[#fafaf9] p-2 text-sm text-[#1c1917] placeholder-[#a8a29e] focus:border-[#2563eb] focus:outline-none"
             rows={2}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -393,14 +393,14 @@ export default function InputWidget({
           <div className="flex justify-end gap-2">
             <button
               onClick={cancelComment}
-              className="rounded px-3 py-1.5 text-sm text-gray-400 hover:text-white"
+              className="rounded px-3 py-1.5 text-sm text-[#a8a29e] hover:text-[#57534e]"
             >
               Cancel
             </button>
             <button
               onClick={submitComment}
               disabled={!comment.trim()}
-              className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50"
+              className="rounded bg-[#2563eb] px-3 py-1.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
             >
               Save
             </button>
@@ -410,14 +410,14 @@ export default function InputWidget({
 
       {/* View feedback panel */}
       {mode === "viewing" && (
-        <div className="w-80 rounded-lg bg-gray-900 p-4 shadow-xl border border-gray-800">
+        <div className="w-80 rounded-lg bg-white p-4 shadow-xl border border-[#e7e5e4]">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-white">
+            <h3 className="text-sm font-medium text-[#1c1917]">
               Feedback ({feedbackItems.length})
             </h3>
             <button
               onClick={() => setMode("idle")}
-              className="text-gray-400 hover:text-white"
+              className="text-[#a8a29e] hover:text-[#57534e]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6L6 18M6 6l12 12" />
@@ -426,25 +426,25 @@ export default function InputWidget({
           </div>
 
           {feedbackItems.length === 0 ? (
-            <p className="text-sm text-gray-500 py-4 text-center">
+            <p className="text-sm text-[#a8a29e] py-4 text-center">
               No feedback yet. Use Edit or Comment to add some.
             </p>
           ) : (
             <>
               <div className="max-h-60 overflow-y-auto mb-3 space-y-2">
                 {feedbackItems.map((item, i) => (
-                  <div key={i} className="bg-gray-800 rounded p-2 text-xs">
+                  <div key={i} className="bg-[#fafaf9] rounded-lg p-2 text-xs border border-[#e7e5e4]">
                     {item.type === "text-edit" ? (
                       <>
-                        <span className="text-amber-400 font-medium">Edit:</span>
-                        <p className="text-gray-500 line-through">{item.original.slice(0, 50)}...</p>
-                        <p className="text-gray-300">{item.edited.slice(0, 50)}...</p>
+                        <span className="text-[#b45309] font-medium">Edit:</span>
+                        <p className="text-[#a8a29e] line-through">{item.original.slice(0, 50)}...</p>
+                        <p className="text-[#57534e]">{item.edited.slice(0, 50)}...</p>
                       </>
                     ) : (
                       <>
-                        <span className="text-blue-400 font-medium">Comment:</span>
-                        <p className="text-gray-300">{item.comment}</p>
-                        <p className="text-gray-500 text-[10px] mt-1">on: {item.elementText.slice(0, 30)}...</p>
+                        <span className="text-[#2563eb] font-medium">Comment:</span>
+                        <p className="text-[#57534e]">{item.comment}</p>
+                        <p className="text-[#a8a29e] text-[10px] mt-1">on: {item.elementText.slice(0, 30)}...</p>
                       </>
                     )}
                   </div>
@@ -453,7 +453,7 @@ export default function InputWidget({
 
               <button
                 onClick={copyFeedback}
-                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white rounded py-2 text-sm font-medium transition"
+                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white rounded-lg py-2 text-sm font-medium transition"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -461,7 +461,7 @@ export default function InputWidget({
                 </svg>
                 Copy JSON to Clipboard
               </button>
-              <p className="text-[10px] text-gray-500 text-center mt-2">
+              <p className="text-[10px] text-[#a8a29e] text-center mt-2">
                 Paste this into Claude Code or send to the site owner
               </p>
             </>

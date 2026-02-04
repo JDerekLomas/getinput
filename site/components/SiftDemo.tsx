@@ -80,23 +80,23 @@ export default function SiftDemo() {
       {/* Step indicators */}
       <div className="flex items-center justify-center gap-2 text-xs">
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition ${
-          currentStep === 1 ? "bg-purple-600 text-white" : currentStep > 1 ? "bg-green-600/20 text-green-400" : "bg-gray-800 text-gray-500"
+          currentStep === 1 ? "bg-[#7c3aed] text-white" : currentStep > 1 ? "bg-green-100 text-green-700" : "bg-[#f5f5f4] text-[#a8a29e]"
         }`}>
           <span className="font-bold">1</span>
           <span>Review content</span>
           {currentStep > 1 && <span>&#10003;</span>}
         </div>
-        <div className="w-4 h-px bg-gray-700" />
+        <div className="w-4 h-px bg-[#e7e5e4]" />
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition ${
-          currentStep === 2 ? "bg-purple-600 text-white" : currentStep > 2 ? "bg-green-600/20 text-green-400" : "bg-gray-800 text-gray-500"
+          currentStep === 2 ? "bg-[#7c3aed] text-white" : currentStep > 2 ? "bg-green-100 text-green-700" : "bg-[#f5f5f4] text-[#a8a29e]"
         }`}>
           <span className="font-bold">2</span>
           <span>Reject with note</span>
           {currentStep > 2 && <span>&#10003;</span>}
         </div>
-        <div className="w-4 h-px bg-gray-700" />
+        <div className="w-4 h-px bg-[#e7e5e4]" />
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition ${
-          currentStep === 3 ? "bg-green-600 text-white" : "bg-gray-800 text-gray-500"
+          currentStep === 3 ? "bg-green-600 text-white" : "bg-[#f5f5f4] text-[#a8a29e]"
         }`}>
           <span className="font-bold">3</span>
           <span>See refinements</span>
@@ -109,16 +109,16 @@ export default function SiftDemo() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex gap-3 text-xs">
-              <span className="text-green-400">{approved.length} approved</span>
-              <span className="text-red-400">{rejected.length} rejected</span>
-              <span className="text-gray-400">
+              <span className="text-green-600">{approved.length} approved</span>
+              <span className="text-red-600">{rejected.length} rejected</span>
+              <span className="text-[#a8a29e]">
                 {items.filter((i) => i.status === "pending").length} pending
               </span>
             </div>
             {(approved.length > 0 || rejected.length > 0) && (
               <button
                 onClick={handleReset}
-                className="text-xs text-gray-500 hover:text-gray-300"
+                className="text-xs text-[#a8a29e] hover:text-[#57534e]"
               >
                 Reset
               </button>
@@ -132,12 +132,12 @@ export default function SiftDemo() {
               return (
                 <div
                   key={item.id}
-                  className={`bg-gray-900 rounded-lg border p-3 transition ${
+                  className={`bg-white rounded-lg border p-3 transition ${
                     item.status === "approved"
-                      ? "border-green-500/50 bg-green-950/20"
+                      ? "border-green-300 bg-green-50"
                       : item.status === "rejected"
-                      ? "border-red-500/50 bg-red-950/20"
-                      : "border-gray-800"
+                      ? "border-red-200 bg-red-50"
+                      : "border-[#e7e5e4]"
                   }`}
                 >
                   <div className="flex gap-3">
@@ -145,19 +145,19 @@ export default function SiftDemo() {
                       <p
                         className={`text-sm ${
                           item.status === "rejected"
-                            ? "text-gray-500 line-through"
-                            : "text-gray-300"
+                            ? "text-[#a8a29e] line-through"
+                            : "text-[#57534e]"
                         }`}
                       >
                         {item.text}
                       </p>
                       {item.issue && item.status === "pending" && (
-                        <span className="inline-block mt-1 text-[10px] bg-amber-900/50 text-amber-300 px-1.5 py-0.5 rounded">
+                        <span className="inline-block mt-1 text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
                           Potential issue: {item.issue}
                         </span>
                       )}
                       {item.note && (
-                        <p className="mt-2 text-xs text-purple-400 italic">
+                        <p className="mt-2 text-xs text-[#7c3aed] italic">
                           Note: "{item.note}"
                         </p>
                       )}
@@ -167,14 +167,14 @@ export default function SiftDemo() {
                       <div className="flex flex-col gap-1">
                         <button
                           onClick={() => handleApprove(item.id)}
-                          className="w-8 h-8 rounded bg-green-600/20 hover:bg-green-600 text-green-400 hover:text-white flex items-center justify-center text-sm transition"
+                          className="w-8 h-8 rounded bg-green-100 hover:bg-green-600 text-green-600 hover:text-white flex items-center justify-center text-sm transition"
                           title="Approve"
                         >
                           &#10003;
                         </button>
                         <button
                           onClick={() => setEditingId(item.id)}
-                          className="w-8 h-8 rounded bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white flex items-center justify-center text-sm transition"
+                          className="w-8 h-8 rounded bg-red-100 hover:bg-red-500 text-red-500 hover:text-white flex items-center justify-center text-sm transition"
                           title="Reject with note"
                         >
                           &#10007;
@@ -198,13 +198,13 @@ export default function SiftDemo() {
                   </div>
 
                   {isEditing && (
-                    <div className="mt-3 pt-3 border-t border-gray-800">
+                    <div className="mt-3 pt-3 border-t border-[#e7e5e4]">
                       <input
                         type="text"
                         value={noteText}
                         onChange={(e) => setNoteText(e.target.value)}
                         placeholder="Why is this being rejected?"
-                        className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-500"
+                        className="w-full bg-[#fafaf9] border border-[#e7e5e4] rounded px-3 py-2 text-sm text-[#1c1917] placeholder-[#a8a29e]"
                         autoFocus
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
@@ -222,7 +222,7 @@ export default function SiftDemo() {
                             setEditingId(null);
                             setNoteText("");
                           }}
-                          className="px-3 py-1 text-xs text-gray-400 hover:text-white"
+                          className="px-3 py-1 text-xs text-[#a8a29e] hover:text-[#57534e]"
                         >
                           Cancel
                         </button>
@@ -230,7 +230,7 @@ export default function SiftDemo() {
                           onClick={() =>
                             handleReject(item.id, noteText || item.issue || "Needs revision")
                           }
-                          className="px-3 py-1 text-xs bg-red-600 rounded text-white hover:bg-red-500"
+                          className="px-3 py-1 text-xs bg-red-500 rounded text-white hover:bg-red-400"
                         >
                           Reject
                         </button>
@@ -243,24 +243,24 @@ export default function SiftDemo() {
           </div>
 
           {!hasApproved && !hasRejected && (
-            <p className="text-xs text-purple-400 text-center animate-pulse">
+            <p className="text-xs text-[#7c3aed] text-center animate-pulse">
               &#8593; Click the buttons to approve or reject content
             </p>
           )}
         </div>
 
         {/* Sift output */}
-        <div className={`bg-gray-900 rounded-xl border p-4 transition ${
-          hasRejected ? "border-green-500/50" : "border-gray-800"
+        <div className={`bg-[#fafaf9] rounded-xl border p-4 transition ${
+          hasRejected ? "border-green-300" : "border-[#e7e5e4]"
         }`}>
-          <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${hasRejected ? "bg-green-500" : "bg-purple-500"}`} />
+          <h4 className="text-sm font-medium text-[#1c1917] mb-3 flex items-center gap-2">
+            <span className={`w-2 h-2 rounded-full ${hasRejected ? "bg-green-500" : "bg-[#7c3aed]"}`} />
             Sift Output
-            {hasRejected && <span className="text-green-400 text-xs ml-auto">Notes become prompt refinements!</span>}
+            {hasRejected && <span className="text-green-600 text-xs ml-auto">Notes become prompt refinements!</span>}
           </h4>
-          <pre className="text-xs text-gray-400 bg-gray-950 rounded-lg p-3 overflow-auto max-h-80 font-mono">
+          <pre className="text-xs text-[#57534e] bg-white rounded-lg p-3 overflow-auto max-h-80 font-mono border border-[#e7e5e4]">
             {approved.length === 0 && rejected.length === 0 ? (
-              <span className="text-gray-600">
+              <span className="text-[#a8a29e]">
                 {`// Approve good content, reject with notes\n// Your notes improve future AI output\n\n{\n  "approved": [],\n  "rejected": [],\n  "refinements": []\n}`}
               </span>
             ) : (

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-type Mode = "idle" | "editing" | "commenting";
+type Mode = "idle" | "editing" | "commenting" | "viewing";
 
 interface TextEdit {
   type: "text-edit";
@@ -91,25 +91,54 @@ export default function InputWidget({
   const [originalText, setOriginalText] = useState("");
   const [comment, setComment] = useState("");
   const [inputCount, setInputCount] = useState(0);
+  const [feedbackItems, setFeedbackItems] = useState<InputItem[]>([]);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("Saved!");
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const host = window.location.hostname;
-    setIsVisible(allowedHosts.some((h) => host.includes(h)));
-    loadInputCount();
+    const visible = allowedHosts.some((h) => host.includes(h));
+    setIsVisible(visible);
+
+    if (visible) {
+      loadFeedback();
+      const hasSeenOnboarding = localStorage.getItem("getinput-onboarding-seen");
+      if (!hasSeenOnboarding) {
+        setShowOnboarding(true);
+      }
+    }
   }, [allowedHosts]);
 
-  const loadInputCount = async () => {
+  const dismissOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem("getinput-onboarding-seen", "true");
+  };
+
+  const handleFirstAction = () => {
+    if (showOnboarding) {
+      dismissOnboarding();
+    }
+  };
+
+  const loadFeedback = async () => {
     try {
       const res = await fetch(apiEndpoint);
       if (res.ok) {
         const data = await res.json();
+        setFeedbackItems(data);
         setInputCount(data.length);
       }
     } catch (e) {
       // No input yet
     }
+  };
+
+  const showToastWithMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
 
   const saveInput = async (item: InputItem) => {
@@ -118,13 +147,19 @@ export default function InputWidget({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(item),
     });
+    setFeedbackItems((prev) => [...prev, item]);
     setInputCount((c) => c + 1);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
+    showToastWithMessage("Saved!");
+  };
+
+  const copyFeedback = async () => {
+    const json = JSON.stringify(feedbackItems, null, 2);
+    await navigator.clipboard.writeText(json);
+    showToastWithMessage("Copied to clipboard!");
   };
 
   const handlePageClick = (e: MouseEvent) => {
-    if (mode === "idle") return;
+    if (mode === "idle" || mode === "viewing") return;
 
     const widget = document.getElementById("input-widget");
     if (widget?.contains(e.target as Node)) return;
@@ -138,7 +173,7 @@ export default function InputWidget({
       setActiveElement(target);
       setOriginalText(target.textContent || "");
       target.contentEditable = "true";
-      target.style.outline = "2px solid #f59e0b";
+      target.style.outline = "2px solid #b45309";
       target.style.outlineOffset = "2px";
       target.focus();
 
@@ -167,7 +202,7 @@ export default function InputWidget({
       target.addEventListener("blur", handleBlur);
     } else if (mode === "commenting") {
       setActiveElement(target);
-      target.style.outline = "2px solid #3b82f6";
+      target.style.outline = "2px solid #2563eb";
       target.style.outlineOffset = "2px";
       setComment("");
       setTimeout(() => commentInputRef.current?.focus(), 50);
@@ -175,7 +210,7 @@ export default function InputWidget({
   };
 
   useEffect(() => {
-    if (mode !== "idle") {
+    if (mode === "editing" || mode === "commenting") {
       document.addEventListener("click", handlePageClick, true);
       document.body.style.cursor = mode === "editing" ? "text" : "crosshair";
     } else {
@@ -225,16 +260,43 @@ export default function InputWidget({
       className="fixed bottom-4 right-4 z-[9999] font-sans"
     >
       {showToast && (
-        <div className="absolute bottom-16 right-0 rounded bg-green-600 px-3 py-2 text-sm text-white shadow-lg">
-          Saved!
+        <div className="absolute bottom-16 right-0 rounded-lg bg-green-600 px-3 py-2 text-sm text-white shadow-lg">
+          {toastMessage}
+        </div>
+      )}
+
+      {/* Onboarding tooltip */}
+      {showOnboarding && mode === "idle" && !activeElement && (
+        <div className="absolute bottom-14 right-0 w-64 rounded-lg bg-white p-3 shadow-xl border border-gray-200">
+          <div className="flex items-start gap-2 mb-2">
+            <span className="text-amber-600 text-lg">&#9998;</span>
+            <div>
+              <p className="text-sm font-medium text-gray-900">Leave feedback on this page</p>
+              <p className="text-xs text-gray-600 mt-1">
+                Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback syncs with Claude Code.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={dismissOnboarding}
+            className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600 py-1"
+          >
+            Got it
+          </button>
+          <div className="absolute -bottom-2 right-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-white" />
         </div>
       )}
 
       {mode === "idle" && !activeElement && (
         <div className="flex gap-2">
           <button
-            onClick={() => setMode("editing")}
-            className="flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-amber-500"
+            onClick={() => {
+              handleFirstAction();
+              setMode("editing");
+            }}
+            className={`flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-amber-500 ${
+              showOnboarding ? "animate-pulse ring-2 ring-amber-400 ring-offset-2" : ""
+            }`}
             title="Click text to edit it directly"
           >
             <svg
@@ -253,8 +315,13 @@ export default function InputWidget({
             Edit
           </button>
           <button
-            onClick={() => setMode("commenting")}
-            className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-blue-500"
+            onClick={() => {
+              handleFirstAction();
+              setMode("commenting");
+            }}
+            className={`flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-blue-500 ${
+              showOnboarding ? "animate-pulse" : ""
+            }`}
             title="Click any element to leave a comment"
           >
             <svg
@@ -273,23 +340,27 @@ export default function InputWidget({
             Comment
           </button>
           {inputCount > 0 && (
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-700 text-xs text-gray-300">
+            <button
+              onClick={() => setMode("viewing")}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-xs text-gray-600 hover:bg-gray-200 transition border border-gray-200"
+              title="View feedback"
+            >
               {inputCount}
-            </span>
+            </button>
           )}
         </div>
       )}
 
-      {mode !== "idle" && !activeElement && (
-        <div className="rounded-lg bg-gray-900 p-4 shadow-xl">
-          <p className="mb-2 text-sm text-white">
+      {(mode === "editing" || mode === "commenting") && !activeElement && (
+        <div className="rounded-lg bg-white p-4 shadow-xl border border-gray-200">
+          <p className="mb-2 text-sm text-gray-900">
             {mode === "editing"
               ? "Click any text to edit it directly"
               : "Click any element to leave a comment"}
           </p>
           <button
             onClick={() => setMode("idle")}
-            className="text-sm text-gray-400 hover:text-white"
+            className="text-sm text-gray-400 hover:text-gray-600"
           >
             Cancel
           </button>
@@ -297,7 +368,7 @@ export default function InputWidget({
       )}
 
       {mode === "commenting" && activeElement && (
-        <div className="w-72 rounded-lg bg-gray-900 p-4 shadow-xl">
+        <div className="w-72 rounded-lg bg-white p-4 shadow-xl border border-gray-200">
           <p className="mb-2 truncate text-xs text-gray-400">
             {activeElement.textContent?.slice(0, 50) ||
               getSelector(activeElement)}
@@ -307,7 +378,7 @@ export default function InputWidget({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="What should change?"
-            className="mb-3 w-full rounded border border-gray-700 bg-gray-800 p-2 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+            className="mb-3 w-full rounded border border-gray-200 bg-gray-50 p-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none"
             rows={2}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -320,7 +391,7 @@ export default function InputWidget({
           <div className="flex justify-end gap-2">
             <button
               onClick={cancelComment}
-              className="rounded px-3 py-1.5 text-sm text-gray-400 hover:text-white"
+              className="rounded px-3 py-1.5 text-sm text-gray-400 hover:text-gray-600"
             >
               Cancel
             </button>
@@ -332,6 +403,67 @@ export default function InputWidget({
               Save
             </button>
           </div>
+        </div>
+      )}
+
+      {/* View feedback panel */}
+      {mode === "viewing" && (
+        <div className="w-80 rounded-lg bg-white p-4 shadow-xl border border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-gray-900">
+              Feedback ({feedbackItems.length})
+            </h3>
+            <button
+              onClick={() => setMode("idle")}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {feedbackItems.length === 0 ? (
+            <p className="text-sm text-gray-400 py-4 text-center">
+              No feedback yet. Use Edit or Comment to add some.
+            </p>
+          ) : (
+            <>
+              <div className="max-h-60 overflow-y-auto mb-3 space-y-2">
+                {feedbackItems.map((item, i) => (
+                  <div key={i} className="bg-gray-50 rounded-lg p-2 text-xs border border-gray-100">
+                    {item.type === "text-edit" ? (
+                      <>
+                        <span className="text-amber-600 font-medium">Edit:</span>
+                        <p className="text-gray-400 line-through">{item.original.slice(0, 50)}...</p>
+                        <p className="text-gray-600">{item.edited.slice(0, 50)}...</p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-blue-600 font-medium">Comment:</span>
+                        <p className="text-gray-600">{item.comment}</p>
+                        <p className="text-gray-400 text-[10px] mt-1">on: {item.elementText.slice(0, 30)}...</p>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={copyFeedback}
+                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white rounded-lg py-2 text-sm font-medium transition"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy JSON to Clipboard
+              </button>
+              <p className="text-[10px] text-gray-400 text-center mt-2">
+                Paste this into Claude Code or send to the site owner
+              </p>
+            </>
+          )}
         </div>
       )}
     </div>
