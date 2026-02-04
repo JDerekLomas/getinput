@@ -13,8 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "getinput - Human-in-the-loop review tools",
-  description: "Click to edit text. Swipe through images. Review AI outputs. All feedback flows back to Claude Code.",
+  metadataBase: new URL("https://getinput.io"),
+  title: "getinput - The human in your loop",
+  description: "AI makes mistakes. Humans catch them. Click to edit text, swipe through images, review AI outputs. The feedback layer for Claude Code.",
+  openGraph: {
+    title: "getinput - The human in your loop",
+    description: "AI makes mistakes. Humans catch them. The feedback layer for Claude Code.",
+    images: ["/illustrations/hero-1.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "getinput - The human in your loop",
+    description: "AI makes mistakes. Humans catch them. The feedback layer for Claude Code.",
+    images: ["/illustrations/hero-1.png"],
+  },
 };
 
 export default function RootLayout({

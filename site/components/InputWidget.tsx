@@ -92,13 +92,35 @@ export default function InputWidget({
   const [comment, setComment] = useState("");
   const [inputCount, setInputCount] = useState(0);
   const [showToast, setShowToast] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(0);
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const host = window.location.hostname;
-    setIsVisible(allowedHosts.some((h) => host.includes(h)));
-    loadInputCount();
+    const visible = allowedHosts.some((h) => host.includes(h));
+    setIsVisible(visible);
+
+    if (visible) {
+      loadInputCount();
+      // Check if user has seen onboarding
+      const hasSeenOnboarding = localStorage.getItem("getinput-onboarding-seen");
+      if (!hasSeenOnboarding) {
+        setShowOnboarding(true);
+      }
+    }
   }, [allowedHosts]);
+
+  const dismissOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem("getinput-onboarding-seen", "true");
+  };
+
+  const handleFirstAction = () => {
+    if (showOnboarding) {
+      dismissOnboarding();
+    }
+  };
 
   const loadInputCount = async () => {
     try {
@@ -230,11 +252,39 @@ export default function InputWidget({
         </div>
       )}
 
+      {/* Onboarding tooltip */}
+      {showOnboarding && mode === "idle" && !activeElement && (
+        <div className="absolute bottom-14 right-0 w-64 rounded-lg bg-gray-800 p-3 shadow-xl border border-gray-700">
+          <div className="flex items-start gap-2 mb-2">
+            <span className="text-amber-400 text-lg">&#9998;</span>
+            <div>
+              <p className="text-sm font-medium text-white">Leave feedback on this page</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback syncs with Claude Code.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={dismissOnboarding}
+            className="w-full mt-2 text-xs text-gray-400 hover:text-white py-1"
+          >
+            Got it
+          </button>
+          {/* Arrow pointing down */}
+          <div className="absolute -bottom-2 right-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800" />
+        </div>
+      )}
+
       {mode === "idle" && !activeElement && (
         <div className="flex gap-2">
           <button
-            onClick={() => setMode("editing")}
-            className="flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-amber-500"
+            onClick={() => {
+              handleFirstAction();
+              setMode("editing");
+            }}
+            className={`flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-amber-500 ${
+              showOnboarding ? "animate-pulse ring-2 ring-amber-400 ring-offset-2 ring-offset-gray-950" : ""
+            }`}
             title="Click text to edit it directly"
           >
             <svg
@@ -253,8 +303,13 @@ export default function InputWidget({
             Edit
           </button>
           <button
-            onClick={() => setMode("commenting")}
-            className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-blue-500"
+            onClick={() => {
+              handleFirstAction();
+              setMode("commenting");
+            }}
+            className={`flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-blue-500 ${
+              showOnboarding ? "animate-pulse" : ""
+            }`}
             title="Click any element to leave a comment"
           >
             <svg
