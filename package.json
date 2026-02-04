@@ -1,0 +1,14 @@
+{
+  "name": "getinput",
+  "private": true,
+  "description": "Human-in-the-loop review tools for AI workflows",
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dereklomas/getinput"
+  },
+  "author": "Derek Lomas",
+  "license": "MIT"
+}

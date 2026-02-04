@@ -1,0 +1,27 @@
+{
+  "name": "getinput-page",
+  "version": "0.1.0",
+  "description": "Visual page feedback widget for Next.js - edit text inline, leave comments",
+  "bin": {
+    "getinput-page": "./cli.mjs"
+  },
+  "files": [
+    "InputWidget.tsx",
+    "route.ts",
+    "cli.mjs"
+  ],
+  "keywords": [
+    "feedback",
+    "review",
+    "nextjs",
+    "design",
+    "annotation"
+  ],
+  "author": "Derek Lomas",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dereklomas/getinput"
+  },
+  "homepage": "https://getinput.io"
+}
