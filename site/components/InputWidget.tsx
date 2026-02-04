@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-type Mode = "idle" | "editing" | "commenting";
+type Mode = "idle" | "editing" | "commenting" | "viewing";
 
 interface TextEdit {
   type: "text-edit";
@@ -91,9 +91,10 @@ export default function InputWidget({
   const [originalText, setOriginalText] = useState("");
   const [comment, setComment] = useState("");
   const [inputCount, setInputCount] = useState(0);
+  const [feedbackItems, setFeedbackItems] = useState<InputItem[]>([]);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("Saved!");
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingStep, setOnboardingStep] = useState(0);
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -102,7 +103,7 @@ export default function InputWidget({
     setIsVisible(visible);
 
     if (visible) {
-      loadInputCount();
+      loadFeedback();
       // Check if user has seen onboarding
       const hasSeenOnboarding = localStorage.getItem("getinput-onboarding-seen");
       if (!hasSeenOnboarding) {
@@ -122,16 +123,23 @@ export default function InputWidget({
     }
   };
 
-  const loadInputCount = async () => {
+  const loadFeedback = async () => {
     try {
       const res = await fetch(apiEndpoint);
       if (res.ok) {
         const data = await res.json();
+        setFeedbackItems(data);
         setInputCount(data.length);
       }
     } catch (e) {
       // No input yet
     }
+  };
+
+  const showToastWithMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
 
   const saveInput = async (item: InputItem) => {
@@ -140,13 +148,19 @@ export default function InputWidget({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(item),
     });
+    setFeedbackItems((prev) => [...prev, item]);
     setInputCount((c) => c + 1);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
+    showToastWithMessage("Saved!");
+  };
+
+  const copyFeedback = async () => {
+    const json = JSON.stringify(feedbackItems, null, 2);
+    await navigator.clipboard.writeText(json);
+    showToastWithMessage("Copied to clipboard!");
   };
 
   const handlePageClick = (e: MouseEvent) => {
-    if (mode === "idle") return;
+    if (mode === "idle" || mode === "viewing") return;
 
     const widget = document.getElementById("input-widget");
     if (widget?.contains(e.target as Node)) return;
@@ -197,7 +211,7 @@ export default function InputWidget({
   };
 
   useEffect(() => {
-    if (mode !== "idle") {
+    if (mode === "editing" || mode === "commenting") {
       document.addEventListener("click", handlePageClick, true);
       document.body.style.cursor = mode === "editing" ? "text" : "crosshair";
     } else {
@@ -248,7 +262,7 @@ export default function InputWidget({
     >
       {showToast && (
         <div className="absolute bottom-16 right-0 rounded bg-green-600 px-3 py-2 text-sm text-white shadow-lg">
-          Saved!
+          {toastMessage}
         </div>
       )}
 
@@ -328,14 +342,18 @@ export default function InputWidget({
             Comment
           </button>
           {inputCount > 0 && (
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-700 text-xs text-gray-300">
+            <button
+              onClick={() => setMode("viewing")}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-700 text-xs text-gray-300 hover:bg-gray-600 transition"
+              title="View feedback"
+            >
               {inputCount}
-            </span>
+            </button>
           )}
         </div>
       )}
 
-      {mode !== "idle" && !activeElement && (
+      {(mode === "editing" || mode === "commenting") && !activeElement && (
         <div className="rounded-lg bg-gray-900 p-4 shadow-xl">
           <p className="mb-2 text-sm text-white">
             {mode === "editing"
@@ -387,6 +405,67 @@ export default function InputWidget({
               Save
             </button>
           </div>
+        </div>
+      )}
+
+      {/* View feedback panel */}
+      {mode === "viewing" && (
+        <div className="w-80 rounded-lg bg-gray-900 p-4 shadow-xl border border-gray-800">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-white">
+              Feedback ({feedbackItems.length})
+            </h3>
+            <button
+              onClick={() => setMode("idle")}
+              className="text-gray-400 hover:text-white"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {feedbackItems.length === 0 ? (
+            <p className="text-sm text-gray-500 py-4 text-center">
+              No feedback yet. Use Edit or Comment to add some.
+            </p>
+          ) : (
+            <>
+              <div className="max-h-60 overflow-y-auto mb-3 space-y-2">
+                {feedbackItems.map((item, i) => (
+                  <div key={i} className="bg-gray-800 rounded p-2 text-xs">
+                    {item.type === "text-edit" ? (
+                      <>
+                        <span className="text-amber-400 font-medium">Edit:</span>
+                        <p className="text-gray-500 line-through">{item.original.slice(0, 50)}...</p>
+                        <p className="text-gray-300">{item.edited.slice(0, 50)}...</p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-blue-400 font-medium">Comment:</span>
+                        <p className="text-gray-300">{item.comment}</p>
+                        <p className="text-gray-500 text-[10px] mt-1">on: {item.elementText.slice(0, 30)}...</p>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={copyFeedback}
+                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white rounded py-2 text-sm font-medium transition"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy JSON to Clipboard
+              </button>
+              <p className="text-[10px] text-gray-500 text-center mt-2">
+                Paste this into Claude Code or send to the site owner
+              </p>
+            </>
+          )}
         </div>
       )}
     </div>
