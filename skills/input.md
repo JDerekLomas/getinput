@@ -1,6 +1,6 @@
 # /input - Human-in-the-loop review tools
 
-Get human input on AI-generated content. Detects modality from context.
+Get human input on AI-generated content. Review locally or share with others.
 
 ## Modalities
 
@@ -9,6 +9,29 @@ Get human input on AI-generated content. Detects modality from context.
 | **page** | Web design feedback | "review the site", "design feedback", "edit the copy" |
 | **picks** | Asset selection | "review photos", "select images", "curate these" |
 | **sift** | AI output review | "review generations", "check outputs", "refine prompts" |
+
+---
+
+## /input share [url]
+
+Share a review link so others can give feedback on a site.
+
+### Generate review link:
+```
+https://getinput.io/review?url=https://your-site.com
+```
+
+Or for local development:
+```
+http://localhost:3000/review?url=http://localhost:3001
+```
+
+### How it works:
+1. Share the review link with teammates, clients, or friends
+2. They visit the link and see the target site with the feedback widget
+3. They click Edit to fix text or Comment to leave notes
+4. Feedback is stored keyed to that URL
+5. Use `/input check [url]` to see their feedback
 
 ---
 
@@ -77,18 +100,31 @@ REJECTS:
 
 ---
 
-## /input check
+## /input check [url]
 
-Read and display pending feedback.
+Read and display pending feedback. Optionally check feedback for a specific URL.
 
-### For page feedback:
+### For local page feedback:
 ```bash
 cat input.json
+```
+
+### For shared URL feedback:
+```bash
+# URL is hashed to find the file
+curl "http://localhost:3000/api/input?url=https://example.com"
+```
+
+Or check the input-data directory:
+```bash
+ls input-data/  # Shows hashed feedback files
+cat input-data/*.json
 ```
 
 Parse and show:
 - **Text edits**: `"Original text" → "Edited text"` (selector for context)
 - **Comments**: `[selector]: "User's comment"`
+- **reviewUrl**: Which URL the feedback is for (if shared)
 
 ### For picks:
 Prompt user: "Visit /review, make your selections, then paste the export here"
@@ -104,10 +140,23 @@ For each text-edit in `input.json`:
 
 ---
 
-## /input clear
+## /input clear [url]
 
+Clear feedback. Optionally specify a URL to clear only that URL's feedback.
+
+### Clear local feedback:
 ```bash
 echo '[]' > input.json
+```
+
+### Clear feedback for a shared URL:
+```bash
+curl -X DELETE "http://localhost:3000/api/input?url=https://example.com"
+```
+
+### Clear all shared feedback:
+```bash
+rm -rf input-data/
 ```
 
 ---
