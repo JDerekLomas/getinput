@@ -79,17 +79,19 @@ interface InputWidgetProps {
   apiEndpoint?: string;
   /** Only show on these hostnames. Defaults to ["localhost"] */
   allowedHosts?: string[];
-  /** URL being reviewed (for sharing with others) */
+  /** URL being reviewed (for sharing with others) - can also be set via ?getinput URL param */
   reviewUrl?: string;
 }
 
 export default function InputWidget({
   apiEndpoint = "/api/input",
   allowedHosts = ["localhost"],
-  reviewUrl,
+  reviewUrl: reviewUrlProp,
 }: InputWidgetProps = {}) {
   const [mode, setMode] = useState<Mode>("idle");
   const [isVisible, setIsVisible] = useState(false);
+  const [isShareMode, setIsShareMode] = useState(false);
+  const [reviewUrl, setReviewUrl] = useState<string | undefined>(reviewUrlProp);
   const [activeElement, setActiveElement] = useState<HTMLElement | null>(null);
   const [originalText, setOriginalText] = useState("");
   const [comment, setComment] = useState("");
@@ -102,18 +104,35 @@ export default function InputWidget({
 
   useEffect(() => {
     const host = window.location.hostname;
-    const visible = allowedHosts.some((h) => host.includes(h));
+    const params = new URLSearchParams(window.location.search);
+
+    // Share mode: ?getinput param is present (any value or empty)
+    const shareMode = params.has("getinput");
+    setIsShareMode(shareMode);
+
+    // Calculate the review URL
+    let targetUrl = reviewUrlProp;
+    if (shareMode && !reviewUrlProp) {
+      // Use the clean URL (without getinput param) as the review URL
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("getinput");
+      targetUrl = cleanUrl.toString();
+    }
+    setReviewUrl(targetUrl);
+
+    // Visible if: allowed host OR share mode is active
+    const visible = allowedHosts.some((h) => host.includes(h)) || shareMode;
     setIsVisible(visible);
 
     if (visible) {
-      loadFeedback();
-      // Check if user has seen onboarding
+      loadFeedback(targetUrl, shareMode);
+      // Check if user has seen onboarding (show extra welcome in share mode)
       const hasSeenOnboarding = localStorage.getItem("getinput-onboarding-seen");
-      if (!hasSeenOnboarding) {
+      if (!hasSeenOnboarding || shareMode) {
         setShowOnboarding(true);
       }
     }
-  }, [allowedHosts]);
+  }, [allowedHosts, reviewUrlProp]);
 
   const dismissOnboarding = () => {
     setShowOnboarding(false);
@@ -126,12 +145,16 @@ export default function InputWidget({
     }
   };
 
-  const loadFeedback = async () => {
+  const loadFeedback = async (targetUrl?: string, isShare?: boolean) => {
+    // In share mode, don't load from API - feedback is local only
+    if (isShare) return;
+
     try {
-      const url = reviewUrl
-        ? `${apiEndpoint}?url=${encodeURIComponent(reviewUrl)}`
+      const urlToUse = targetUrl || reviewUrl;
+      const endpoint = urlToUse
+        ? `${apiEndpoint}?url=${encodeURIComponent(urlToUse)}`
         : apiEndpoint;
-      const res = await fetch(url);
+      const res = await fetch(endpoint);
       if (res.ok) {
         const data = await res.json();
         setFeedbackItems(data);
@@ -149,17 +172,20 @@ export default function InputWidget({
   };
 
   const saveInput = async (item: InputItem) => {
-    const url = reviewUrl
-      ? `${apiEndpoint}?url=${encodeURIComponent(reviewUrl)}`
-      : apiEndpoint;
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(item),
-    });
+    // In share mode, just store locally - visitor will copy and send
+    if (!isShareMode) {
+      const url = reviewUrl
+        ? `${apiEndpoint}?url=${encodeURIComponent(reviewUrl)}`
+        : apiEndpoint;
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item),
+      });
+    }
     setFeedbackItems((prev) => [...prev, item]);
     setInputCount((c) => c + 1);
-    showToastWithMessage("Saved!");
+    showToastWithMessage(isShareMode ? "Added!" : "Saved!");
   };
 
   const copyFeedback = async () => {
@@ -169,10 +195,14 @@ export default function InputWidget({
   };
 
   const shareReviewUrl = async () => {
-    const currentUrl = reviewUrl || window.location.href;
-    const shareUrl = `${window.location.origin}/review?url=${encodeURIComponent(currentUrl)}`;
+    // Generate a share URL by adding ?getinput to the current page
+    const baseUrl = reviewUrl || window.location.href;
+    const url = new URL(baseUrl);
+    url.searchParams.set("getinput", "");
+    // Clean up the URL (remove empty = sign)
+    const shareUrl = url.toString().replace("getinput=&", "getinput&").replace("getinput=", "getinput");
     await navigator.clipboard.writeText(shareUrl);
-    showToastWithMessage("Review link copied!");
+    showToastWithMessage("Share link copied!");
   };
 
   const handlePageClick = (e: MouseEvent) => {
@@ -288,9 +318,15 @@ export default function InputWidget({
           <div className="flex items-start gap-2 mb-2">
             <span className="text-[#b45309] text-lg">&#9998;</span>
             <div>
-              <p className="text-sm font-medium text-[#1c1917]">Leave feedback on this page</p>
+              <p className="text-sm font-medium text-[#1c1917]">
+                {isShareMode ? "You've been invited to review" : "Leave feedback on this page"}
+              </p>
               <p className="text-xs text-[#57534e] mt-1">
-                Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback syncs with Claude Code.
+                {isShareMode ? (
+                  <>Click <strong>Edit</strong> to suggest text changes, or <strong>Comment</strong> to leave notes. The site owner will see your feedback.</>
+                ) : (
+                  <>Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback syncs with Claude Code.</>
+                )}
               </p>
             </div>
           </div>
@@ -443,7 +479,9 @@ export default function InputWidget({
 
           {feedbackItems.length === 0 ? (
             <p className="text-sm text-[#a8a29e] py-4 text-center">
-              No feedback yet. Use Edit or Comment to add some.
+              {isShareMode
+                ? "Leave some feedback, then copy and send it back."
+                : "No feedback yet. Use Edit or Comment to add some."}
             </p>
           ) : (
             <>
@@ -467,32 +505,52 @@ export default function InputWidget({
                 ))}
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={copyFeedback}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#1c1917] hover:bg-[#292524] text-white rounded-lg py-2 text-sm font-medium transition"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                  Copy JSON
-                </button>
-                <button
-                  onClick={shareReviewUrl}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg py-2 text-sm font-medium transition"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                    <polyline points="16,6 12,2 8,6" />
-                    <line x1="12" y1="2" x2="12" y2="15" />
-                  </svg>
-                  Share
-                </button>
-              </div>
-              <p className="text-[10px] text-[#a8a29e] text-center mt-2">
-                Copy JSON for Claude Code, or share link with others
-              </p>
+              {isShareMode ? (
+                <>
+                  <button
+                    onClick={copyFeedback}
+                    className="w-full flex items-center justify-center gap-2 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg py-2.5 text-sm font-medium transition"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    Copy feedback to send
+                  </button>
+                  <p className="text-[10px] text-[#a8a29e] text-center mt-2">
+                    Paste this into Slack, email, or wherever you communicate
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={copyFeedback}
+                      className="flex-1 flex items-center justify-center gap-2 bg-[#1c1917] hover:bg-[#292524] text-white rounded-lg py-2 text-sm font-medium transition"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </svg>
+                      Copy JSON
+                    </button>
+                    <button
+                      onClick={shareReviewUrl}
+                      className="flex-1 flex items-center justify-center gap-2 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-lg py-2 text-sm font-medium transition"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                        <polyline points="16,6 12,2 8,6" />
+                        <line x1="12" y1="2" x2="12" y2="15" />
+                      </svg>
+                      Share
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-[#a8a29e] text-center mt-2">
+                    Copy JSON for Claude Code, or share link with others
+                  </p>
+                </>
+              )}
             </>
           )}
         </div>

@@ -1,110 +1,96 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import InputWidget from "@/components/InputWidget";
+import { Suspense, useEffect, useState } from "react";
 
 function ReviewContent() {
   const searchParams = useSearchParams();
   const targetUrl = searchParams.get("url");
+  const [copied, setCopied] = useState(false);
 
-  if (!targetUrl) {
-    return (
-      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center p-6">
-        <div className="max-w-md text-center">
-          <h1 className="font-serif text-2xl font-medium text-[#1c1917] mb-4">
-            No URL provided
-          </h1>
-          <p className="text-[#57534e] mb-6">
-            Add a <code className="bg-[#f5f5f4] px-1.5 py-0.5 rounded text-sm font-mono">?url=</code> parameter to review a site.
-          </p>
-          <p className="text-sm text-[#a8a29e]">
-            Example: <code className="font-mono text-xs">/review?url=https://example.com</code>
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // If a URL is provided, generate the share link and offer to copy it
+  const shareLink = targetUrl
+    ? `${targetUrl}${targetUrl.includes("?") ? "&" : "?"}getinput`
+    : null;
 
-  // Validate URL
-  let validUrl: URL;
-  try {
-    validUrl = new URL(targetUrl);
-    if (!["http:", "https:"].includes(validUrl.protocol)) {
-      throw new Error("Invalid protocol");
+  const copyShareLink = async () => {
+    if (shareLink) {
+      await navigator.clipboard.writeText(shareLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
-  } catch {
-    return (
-      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center p-6">
-        <div className="max-w-md text-center">
-          <h1 className="font-serif text-2xl font-medium text-[#1c1917] mb-4">
-            Invalid URL
-          </h1>
-          <p className="text-[#57534e]">
-            Please provide a valid http:// or https:// URL.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-[#1c1917] flex flex-col">
-      {/* Header bar */}
-      <div className="bg-[#292524] border-b border-[#3f3f46] px-4 py-2 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <a href="/" className="text-white font-serif font-medium">
-            getinput
-          </a>
-          <span className="text-[#57534e]">/</span>
-          <span className="text-[#a8a29e] text-sm truncate max-w-[300px] md:max-w-[500px]">
-            {validUrl.hostname}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[#a8a29e] hidden sm:inline">
-            Click elements to give feedback
-          </span>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center p-6">
+      <div className="max-w-lg text-center">
+        <h1 className="font-serif text-3xl font-medium text-[#1c1917] mb-4">
+          Share for feedback
+        </h1>
 
-      {/* Iframe container */}
-      <div className="flex-1 relative">
-        <iframe
-          src={targetUrl}
-          className="w-full h-full border-0"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          title={`Reviewing ${validUrl.hostname}`}
-        />
-
-        {/* Overlay message for cross-origin limitations */}
-        <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80">
-          <div className="bg-[#1c1917]/95 backdrop-blur border border-[#3f3f46] rounded-lg p-3 text-sm">
-            <p className="text-white font-medium mb-1">Cross-origin note</p>
-            <p className="text-[#a8a29e] text-xs leading-relaxed">
-              Due to browser security, the feedback widget can't overlay external sites directly.
-              For full functionality, add the widget to your own project.
+        {shareLink ? (
+          <>
+            <p className="text-[#57534e] mb-6">
+              Add <code className="bg-[#f5f5f4] px-1.5 py-0.5 rounded text-sm font-mono">?getinput</code> to
+              your URL so others can leave feedback:
             </p>
-          </div>
+
+            <div className="bg-white border border-[#e7e5e4] rounded-lg p-4 mb-4">
+              <code className="text-sm text-[#57534e] break-all">{shareLink}</code>
+            </div>
+
+            <button
+              onClick={copyShareLink}
+              className="bg-[#1c1917] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#292524] transition"
+            >
+              {copied ? "Copied!" : "Copy share link"}
+            </button>
+
+            <p className="text-sm text-[#a8a29e] mt-6">
+              When visitors open this link, they'll see the feedback widget and can leave comments or suggest edits.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-[#57534e] mb-6">
+              To get feedback on your site, just add <code className="bg-[#f5f5f4] px-1.5 py-0.5 rounded text-sm font-mono">?getinput</code> to any URL:
+            </p>
+
+            <div className="bg-white border border-[#e7e5e4] rounded-lg p-4 mb-4 text-left">
+              <p className="text-sm text-[#a8a29e] mb-2">Your URL:</p>
+              <code className="text-sm text-[#57534e]">https://your-site.com</code>
+              <p className="text-sm text-[#a8a29e] mt-4 mb-2">Share this:</p>
+              <code className="text-sm text-[#1c1917] font-medium">https://your-site.com<span className="text-[#2563eb]">?getinput</span></code>
+            </div>
+
+            <p className="text-sm text-[#a8a29e] mt-6">
+              Make sure your site has the InputWidget component installed. See <a href="/" className="text-[#2563eb] hover:underline">setup instructions</a>.
+            </p>
+          </>
+        )}
+
+        <div className="mt-12 pt-8 border-t border-[#e7e5e4]">
+          <a
+            href="/"
+            className="text-[#57534e] hover:text-[#1c1917] text-sm"
+          >
+            ← Back to getinput
+          </a>
         </div>
       </div>
-
-      {/* Widget for this page's feedback */}
-      <InputWidget
-        allowedHosts={["localhost", "getinput.io", "vercel.app"]}
-        reviewUrl={targetUrl}
-      />
     </div>
   );
 }
 
 export default function ReviewPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
-        <p className="text-[#57534e]">Loading...</p>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
+          <p className="text-[#57534e]">Loading...</p>
+        </div>
+      }
+    >
       <ReviewContent />
     </Suspense>
   );

@@ -12,26 +12,33 @@ Get human input on AI-generated content. Review locally or share with others.
 
 ---
 
-## /input share [url]
+## /input share
 
-Share a review link so others can give feedback on a site.
-
-### Generate review link:
-```
-https://getinput.io/review?url=https://your-site.com
-```
-
-Or for local development:
-```
-http://localhost:3000/review?url=http://localhost:3001
-```
+Share a link so others can give feedback on your site.
 
 ### How it works:
-1. Share the review link with teammates, clients, or friends
-2. They visit the link and see the target site with the feedback widget
-3. They click Edit to fix text or Comment to leave notes
-4. Feedback is stored keyed to that URL
-5. Use `/input check [url]` to see their feedback
+Just add `?getinput` to any page URL:
+```
+https://your-site.com?getinput
+https://your-site.com/about?getinput
+http://localhost:3000?getinput
+```
+
+When visitors open this link:
+1. The feedback widget appears (even if they're not on localhost)
+2. They can Edit text or leave Comments
+3. They click "Copy feedback to send" and paste it back to you
+4. You paste their JSON into `/input apply` to make the changes
+
+### Generating share links:
+- Click the "Share" button in the widget to copy a share link
+- Or manually add `?getinput` to any URL
+
+### No server required:
+In share mode, feedback isn't stored on your server - visitors just copy/paste it back to you via Slack, email, etc. This means:
+- Works on static sites
+- No API endpoint needed for reviewers
+- Simple and portable
 
 ---
 
