@@ -11,6 +11,8 @@ import PicksToolMockup from "@/components/PicksToolMockup";
 import SiftToolMockup from "@/components/SiftToolMockup";
 import SoloMockup from "@/components/SoloMockup";
 import TeamMockup from "@/components/TeamMockup";
+import HeroMockup from "@/components/HeroMockup";
+import LoopMockup from "@/components/LoopMockup";
 
 type DemoTab = "page" | "picks" | "sift";
 
@@ -47,13 +49,10 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Screenshot: Hero - before/after of AI output with feedback annotations */}
+          {/* Hero mockup */}
           <div className="max-w-4xl mx-auto">
-            <div className="aspect-[16/9] rounded-2xl border-2 border-dashed border-[#d6d3d1] bg-[#f5f5f4]/50 flex items-center justify-center">
-              <div className="text-center px-6">
-                <p className="text-sm font-medium text-[#57534e] mb-1">Screenshot 1: Hero</p>
-                <p className="text-xs text-[#a8a29e]">Split view: AI-generated page (left) → same page with feedback annotations (right)</p>
-              </div>
+            <div className="aspect-[16/9] rounded-2xl overflow-hidden border border-[#e7e5e4] shadow-lg">
+              <HeroMockup />
             </div>
           </div>
         </div>
@@ -292,14 +291,9 @@ export default function Home() {
             Mark it up, feed it back, watch it improve.
           </p>
 
-          {/* Screenshot: The loop - 3-panel showing feedback → apply → result */}
-          <div className="aspect-[21/9] rounded-2xl border-2 border-dashed border-[#d6d3d1] bg-white flex items-center justify-center">
-            <div className="text-center px-6">
-              <p className="text-sm font-medium text-[#57534e] mb-2">Screenshot 8: The Loop</p>
-              <p className="text-xs text-[#a8a29e] max-w-md">
-                Three panels: (1) Page with red feedback annotations → (2) Terminal showing /input apply → (3) Clean page with fixes applied
-              </p>
-            </div>
+          {/* Loop mockup */}
+          <div className="aspect-[21/9] rounded-2xl overflow-hidden border border-[#e7e5e4] shadow-sm">
+            <LoopMockup />
           </div>
         </div>
       </section>
