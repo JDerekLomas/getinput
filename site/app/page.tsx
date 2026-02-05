@@ -5,6 +5,7 @@ import InputWidget from "@/components/InputWidget";
 import PageDemo from "@/components/PageDemo";
 import PicksDemo from "@/components/PicksDemo";
 import SiftDemo from "@/components/SiftDemo";
+import CommunityFeedMockup from "@/components/CommunityFeedMockup";
 
 type DemoTab = "page" | "picks" | "sift";
 
@@ -132,12 +133,9 @@ export default function Home() {
               <div className="absolute top-3 right-3 text-xs font-medium text-[#b45309] bg-[#fef3c7] px-2 py-0.5 rounded z-10">
                 Coming soon
               </div>
-              {/* Screenshot: Community - mockup of the public feed */}
-              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
-                <div className="text-center px-3">
-                  <p className="text-xs font-medium text-[#a8a29e]">Screenshot 4</p>
-                  <p className="text-[10px] text-[#a8a29e]">Community: public feed mockup</p>
-                </div>
+              {/* Community feed mockup */}
+              <div className="aspect-[4/3] rounded-lg border border-[#e7e5e4] overflow-hidden mb-4">
+                <CommunityFeedMockup />
               </div>
               <p className="text-xs font-medium text-[#b45309] tracking-wide uppercase mb-3">
                 Post publicly
