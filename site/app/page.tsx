@@ -9,6 +9,8 @@ import CommunityFeedMockup from "@/components/CommunityFeedMockup";
 import PageToolMockup from "@/components/PageToolMockup";
 import PicksToolMockup from "@/components/PicksToolMockup";
 import SiftToolMockup from "@/components/SiftToolMockup";
+import SoloMockup from "@/components/SoloMockup";
+import TeamMockup from "@/components/TeamMockup";
 
 type DemoTab = "page" | "picks" | "sift";
 
@@ -89,12 +91,9 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6 hover:shadow-sm transition">
-              {/* Screenshot: Solo - developer reviewing their own page with widget open */}
-              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
-                <div className="text-center px-3">
-                  <p className="text-xs font-medium text-[#a8a29e]">Screenshot 2</p>
-                  <p className="text-[10px] text-[#a8a29e]">Solo: dev reviewing own work</p>
-                </div>
+              {/* Solo mockup */}
+              <div className="aspect-[4/3] rounded-lg border border-[#e7e5e4] overflow-hidden mb-4">
+                <SoloMockup />
               </div>
               <p className="text-xs font-medium text-[#a8a29e] tracking-wide uppercase mb-3">
                 Free
@@ -111,12 +110,9 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6 hover:shadow-sm transition">
-              {/* Screenshot: Team - share link UI or split view of sender/reviewer */}
-              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
-                <div className="text-center px-3">
-                  <p className="text-xs font-medium text-[#a8a29e]">Screenshot 3</p>
-                  <p className="text-[10px] text-[#a8a29e]">Team: sharing link with client</p>
-                </div>
+              {/* Team mockup */}
+              <div className="aspect-[4/3] rounded-lg border border-[#e7e5e4] overflow-hidden mb-4">
+                <TeamMockup />
               </div>
               <p className="text-xs font-medium text-[#2563eb] tracking-wide uppercase mb-3">
                 Share link
