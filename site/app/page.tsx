@@ -6,6 +6,9 @@ import PageDemo from "@/components/PageDemo";
 import PicksDemo from "@/components/PicksDemo";
 import SiftDemo from "@/components/SiftDemo";
 import CommunityFeedMockup from "@/components/CommunityFeedMockup";
+import PageToolMockup from "@/components/PageToolMockup";
+import PicksToolMockup from "@/components/PicksToolMockup";
+import SiftToolMockup from "@/components/SiftToolMockup";
 
 type DemoTab = "page" | "picks" | "sift";
 
@@ -182,12 +185,9 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
-              {/* Screenshot: Page tool - inline edit popover visible */}
-              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
-                <div className="text-center px-3">
-                  <p className="text-xs font-medium text-[#b45309]">Screenshot 5</p>
-                  <p className="text-[10px] text-[#a8a29e]">Page: inline edit popover</p>
-                </div>
+              {/* Page tool mockup */}
+              <div className="aspect-[4/3] rounded-lg border border-[#e7e5e4] overflow-hidden mb-4">
+                <PageToolMockup />
               </div>
               <div className="w-10 h-10 rounded-lg bg-[#fef3c7] flex items-center justify-center mb-4">
                 <span className="text-[#b45309] font-mono text-sm font-semibold">Pg</span>
@@ -199,12 +199,9 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
-              {/* Screenshot: Picks tool - card stack with swipe action */}
-              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
-                <div className="text-center px-3">
-                  <p className="text-xs font-medium text-[#2563eb]">Screenshot 6</p>
-                  <p className="text-[10px] text-[#a8a29e]">Picks: swiping through images</p>
-                </div>
+              {/* Picks tool mockup */}
+              <div className="aspect-[4/3] rounded-lg border border-[#e7e5e4] overflow-hidden mb-4">
+                <PicksToolMockup />
               </div>
               <div className="w-10 h-10 rounded-lg bg-[#dbeafe] flex items-center justify-center mb-4">
                 <span className="text-[#2563eb] font-mono text-sm font-semibold">Pk</span>
@@ -216,12 +213,9 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
-              {/* Screenshot: Sift tool - content list with approve/reject marks */}
-              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
-                <div className="text-center px-3">
-                  <p className="text-xs font-medium text-[#7c3aed]">Screenshot 7</p>
-                  <p className="text-[10px] text-[#a8a29e]">Sift: batch review with marks</p>
-                </div>
+              {/* Sift tool mockup */}
+              <div className="aspect-[4/3] rounded-lg border border-[#e7e5e4] overflow-hidden mb-4">
+                <SiftToolMockup />
               </div>
               <div className="w-10 h-10 rounded-lg bg-[#f3e8ff] flex items-center justify-center mb-4">
                 <span className="text-[#7c3aed] font-mono text-sm font-semibold">Sf</span>
