@@ -26,7 +26,7 @@ export default function Home() {
             AI can generate a landing page in seconds. But is the copy right? Are the images good?
             Get feedback from yourself, your team, or the community — then feed it back to the AI.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
             <a
               href="#demo"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#1c1917] text-white rounded-lg font-medium hover:bg-[#292524] transition"
@@ -39,6 +39,16 @@ export default function Home() {
             >
               How it works
             </a>
+          </div>
+
+          {/* Screenshot: Hero - before/after of AI output with feedback annotations */}
+          <div className="max-w-4xl mx-auto">
+            <div className="aspect-[16/9] rounded-2xl border-2 border-dashed border-[#d6d3d1] bg-[#f5f5f4]/50 flex items-center justify-center">
+              <div className="text-center px-6">
+                <p className="text-sm font-medium text-[#57534e] mb-1">Screenshot 1: Hero</p>
+                <p className="text-xs text-[#a8a29e]">Split view: AI-generated page (left) → same page with feedback annotations (right)</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -75,6 +85,13 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6 hover:shadow-sm transition">
+              {/* Screenshot: Solo - developer reviewing their own page with widget open */}
+              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
+                <div className="text-center px-3">
+                  <p className="text-xs font-medium text-[#a8a29e]">Screenshot 2</p>
+                  <p className="text-[10px] text-[#a8a29e]">Solo: dev reviewing own work</p>
+                </div>
+              </div>
               <p className="text-xs font-medium text-[#a8a29e] tracking-wide uppercase mb-3">
                 Free
               </p>
@@ -90,6 +107,13 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6 hover:shadow-sm transition">
+              {/* Screenshot: Team - share link UI or split view of sender/reviewer */}
+              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
+                <div className="text-center px-3">
+                  <p className="text-xs font-medium text-[#a8a29e]">Screenshot 3</p>
+                  <p className="text-[10px] text-[#a8a29e]">Team: sharing link with client</p>
+                </div>
+              </div>
               <p className="text-xs font-medium text-[#2563eb] tracking-wide uppercase mb-3">
                 Share link
               </p>
@@ -105,8 +129,15 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6 hover:shadow-sm transition relative overflow-hidden">
-              <div className="absolute top-3 right-3 text-xs font-medium text-[#b45309] bg-[#fef3c7] px-2 py-0.5 rounded">
+              <div className="absolute top-3 right-3 text-xs font-medium text-[#b45309] bg-[#fef3c7] px-2 py-0.5 rounded z-10">
                 Coming soon
+              </div>
+              {/* Screenshot: Community - mockup of the public feed */}
+              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
+                <div className="text-center px-3">
+                  <p className="text-xs font-medium text-[#a8a29e]">Screenshot 4</p>
+                  <p className="text-[10px] text-[#a8a29e]">Community: public feed mockup</p>
+                </div>
               </div>
               <p className="text-xs font-medium text-[#b45309] tracking-wide uppercase mb-3">
                 Post publicly
@@ -153,6 +184,13 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
+              {/* Screenshot: Page tool - inline edit popover visible */}
+              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
+                <div className="text-center px-3">
+                  <p className="text-xs font-medium text-[#b45309]">Screenshot 5</p>
+                  <p className="text-[10px] text-[#a8a29e]">Page: inline edit popover</p>
+                </div>
+              </div>
               <div className="w-10 h-10 rounded-lg bg-[#fef3c7] flex items-center justify-center mb-4">
                 <span className="text-[#b45309] font-mono text-sm font-semibold">Pg</span>
               </div>
@@ -163,6 +201,13 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
+              {/* Screenshot: Picks tool - card stack with swipe action */}
+              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
+                <div className="text-center px-3">
+                  <p className="text-xs font-medium text-[#2563eb]">Screenshot 6</p>
+                  <p className="text-[10px] text-[#a8a29e]">Picks: swiping through images</p>
+                </div>
+              </div>
               <div className="w-10 h-10 rounded-lg bg-[#dbeafe] flex items-center justify-center mb-4">
                 <span className="text-[#2563eb] font-mono text-sm font-semibold">Pk</span>
               </div>
@@ -173,6 +218,13 @@ export default function Home() {
             </div>
 
             <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
+              {/* Screenshot: Sift tool - content list with approve/reject marks */}
+              <div className="aspect-[4/3] rounded-lg border-2 border-dashed border-[#e7e5e4] bg-[#fafaf9] flex items-center justify-center mb-4">
+                <div className="text-center px-3">
+                  <p className="text-xs font-medium text-[#7c3aed]">Screenshot 7</p>
+                  <p className="text-[10px] text-[#a8a29e]">Sift: batch review with marks</p>
+                </div>
+              </div>
               <div className="w-10 h-10 rounded-lg bg-[#f3e8ff] flex items-center justify-center mb-4">
                 <span className="text-[#7c3aed] font-mono text-sm font-semibold">Sf</span>
               </div>
@@ -242,8 +294,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* The feedback loop */}
+      <section className="px-6 py-20 bg-[#f5f5f4]">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="font-serif text-3xl font-medium mb-4 text-[#1c1917] text-center">
+            The feedback loop
+          </h2>
+          <p className="text-[#57534e] text-center mb-12 max-w-xl mx-auto">
+            Mark it up, feed it back, watch it improve.
+          </p>
+
+          {/* Screenshot: The loop - 3-panel showing feedback → apply → result */}
+          <div className="aspect-[21/9] rounded-2xl border-2 border-dashed border-[#d6d3d1] bg-white flex items-center justify-center">
+            <div className="text-center px-6">
+              <p className="text-sm font-medium text-[#57534e] mb-2">Screenshot 8: The Loop</p>
+              <p className="text-xs text-[#a8a29e] max-w-md">
+                Three panels: (1) Page with red feedback annotations → (2) Terminal showing /input apply → (3) Clean page with fixes applied
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* For developers */}
-      <section className="px-6 py-16 border-t border-[#e7e5e4]">
+      <section className="px-6 py-16 border-t border-[#e7e5e4] bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-start gap-6">
             <div className="w-12 h-12 rounded-xl bg-[#f5f5f4] flex items-center justify-center shrink-0">
