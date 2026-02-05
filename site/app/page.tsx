@@ -298,31 +298,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* For developers */}
-      <section className="px-6 py-16 border-t border-[#e7e5e4] bg-white">
+      {/* Install skill */}
+      <section id="install" className="px-6 py-20 border-t border-[#e7e5e4] bg-white">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-start gap-6">
-            <div className="w-12 h-12 rounded-xl bg-[#f5f5f4] flex items-center justify-center shrink-0">
-              <span className="font-mono text-sm text-[#57534e]">&gt;_</span>
+          <div className="text-center mb-12">
+            <div className="w-14 h-14 rounded-xl bg-[#f5f5f4] flex items-center justify-center mx-auto mb-4">
+              <span className="font-mono text-lg text-[#57534e]">&gt;_</span>
             </div>
-            <div>
-              <h3 className="font-medium text-lg text-[#1c1917] mb-2">For Claude Code users</h3>
-              <p className="text-[#57534e] text-sm leading-relaxed mb-4">
-                Add the widget to your project, review visually, then tell Claude to apply the feedback.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <code className="bg-[#f5f5f4] px-3 py-1.5 rounded text-sm text-[#57534e] font-mono">
-                  npx getinput-page
-                </code>
-                <code className="bg-[#f5f5f4] px-3 py-1.5 rounded text-sm text-[#57534e] font-mono">
-                  /input check
-                </code>
-                <code className="bg-[#f5f5f4] px-3 py-1.5 rounded text-sm text-[#57534e] font-mono">
-                  /input apply
-                </code>
-              </div>
+            <h2 className="font-serif text-3xl font-medium mb-3 text-[#1c1917]">
+              Install the Claude Code skill
+            </h2>
+            <p className="text-[#57534e]">
+              One command to add feedback to any Next.js project.
+            </p>
+          </div>
+
+          {/* Install command */}
+          <div className="bg-[#1c1917] rounded-xl p-6 mb-8">
+            <p className="text-[#a8a29e] text-xs mb-2 font-mono">Install the skill:</p>
+            <div className="flex items-center gap-3">
+              <code className="text-white font-mono text-sm flex-1 overflow-x-auto">
+                curl -o ~/.claude/skills/input.md https://raw.githubusercontent.com/JDerekLomas/getinput/main/skill.md
+              </code>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText("curl -o ~/.claude/skills/input.md https://raw.githubusercontent.com/JDerekLomas/getinput/main/skill.md");
+                }}
+                className="text-[#a8a29e] hover:text-white transition p-2"
+                title="Copy to clipboard"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
             </div>
           </div>
+
+          {/* Commands */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-[#f5f5f4] rounded-lg p-4">
+              <code className="text-[#b45309] font-mono text-sm font-medium">/input setup</code>
+              <p className="text-[#57534e] text-sm mt-1">Add widget to your project</p>
+            </div>
+            <div className="bg-[#f5f5f4] rounded-lg p-4">
+              <code className="text-[#b45309] font-mono text-sm font-medium">/input share</code>
+              <p className="text-[#57534e] text-sm mt-1">Generate link for others to review</p>
+            </div>
+            <div className="bg-[#f5f5f4] rounded-lg p-4">
+              <code className="text-[#b45309] font-mono text-sm font-medium">/input check</code>
+              <p className="text-[#57534e] text-sm mt-1">View pending feedback</p>
+            </div>
+            <div className="bg-[#f5f5f4] rounded-lg p-4">
+              <code className="text-[#b45309] font-mono text-sm font-medium">/input apply</code>
+              <p className="text-[#57534e] text-sm mt-1">Apply edits to source files</p>
+            </div>
+          </div>
+
+          <p className="text-center text-[#a8a29e] text-sm mt-8">
+            Works with any Next.js project. Widget shows on localhost, syncs with Claude Code.
+          </p>
         </div>
       </section>
 
