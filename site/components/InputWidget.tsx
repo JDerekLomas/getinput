@@ -323,9 +323,9 @@ export default function InputWidget({
               </p>
               <p className="text-xs text-[#57534e] mt-1">
                 {isShareMode ? (
-                  <>Click <strong>Edit</strong> or <strong>Comment</strong>, then hit the green <strong>Send</strong> button to copy your feedback.</>
+                  <>Leave your feedback using <strong>Edit</strong> or <strong>Comment</strong>. When done, click <strong>Copy feedback</strong> and paste it back to the person who sent you this link.</>
                 ) : (
-                  <>Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback syncs with Claude Code.</>
+                  <>Click <strong>Edit</strong> to fix text directly, or <strong>Comment</strong> to leave notes. Your feedback auto-saves.</>
                 )}
               </p>
             </div>
@@ -393,29 +393,32 @@ export default function InputWidget({
             </svg>
             Comment
           </button>
-          {inputCount > 0 && (
-            isShareMode ? (
-              <button
-                onClick={copyFeedback}
-                className="flex items-center gap-2 rounded-full bg-[#16a34a] px-4 py-2 text-sm font-medium text-white shadow-lg hover:bg-[#15803d] transition"
-                title="Copy feedback to send back"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-                Send ({inputCount})
-              </button>
-            ) : (
-              <button
-                onClick={() => setMode("viewing")}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5f5f4] text-xs text-[#57534e] hover:bg-[#e7e5e4] transition border border-[#e7e5e4]"
-                title="View feedback"
-              >
-                {inputCount}
-              </button>
-            )
-          )}
+          {isShareMode ? (
+            <button
+              onClick={copyFeedback}
+              disabled={inputCount === 0}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-lg transition ${
+                inputCount > 0
+                  ? "bg-[#16a34a] text-white hover:bg-[#15803d]"
+                  : "bg-[#e7e5e4] text-[#a8a29e] cursor-not-allowed"
+              }`}
+              title={inputCount > 0 ? "Copy feedback to send back" : "Add feedback first"}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              Copy feedback{inputCount > 0 ? ` (${inputCount})` : ""}
+            </button>
+          ) : inputCount > 0 ? (
+            <button
+              onClick={() => setMode("viewing")}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f5f5f4] text-xs text-[#57534e] hover:bg-[#e7e5e4] transition border border-[#e7e5e4]"
+              title="View feedback"
+            >
+              {inputCount}
+            </button>
+          ) : null}
         </div>
       )}
 
