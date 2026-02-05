@@ -336,6 +336,7 @@ export default function InputWidget({
       )}
 
       {mode === "idle" && !activeElement && (
+        <div className="flex flex-col items-end gap-2">
         <div className="flex gap-2">
           <button
             onClick={() => {
@@ -413,6 +414,17 @@ export default function InputWidget({
               {inputCount}
             </button>
           ) : null}
+        </div>
+        {isShareMode && (
+          <a
+            href="https://getinput.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-gray-400 hover:text-gray-600 transition"
+          >
+            Powered by getinput
+          </a>
+        )}
         </div>
       )}
 
