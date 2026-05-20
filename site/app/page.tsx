@@ -49,8 +49,8 @@ export default function Home() {
           </div>
 
           {/* Hero mockup */}
-          <div className="max-w-4xl mx-auto">
-            <div className="aspect-[16/9] rounded-2xl overflow-hidden border border-[#e7e5e4] shadow-lg">
+          <div className="max-w-5xl mx-auto">
+            <div className="rounded-2xl overflow-hidden border border-[#e7e5e4] shadow-lg">
               <HeroMockup />
             </div>
           </div>
