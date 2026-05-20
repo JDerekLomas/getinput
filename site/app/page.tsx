@@ -12,7 +12,6 @@ import SiftToolMockup from "@/components/SiftToolMockup";
 import SoloMockup from "@/components/SoloMockup";
 import TeamMockup from "@/components/TeamMockup";
 import HeroMockup from "@/components/HeroMockup";
-import LoopMockup from "@/components/LoopMockup";
 
 type DemoTab = "page" | "picks" | "sift";
 
@@ -257,23 +256,6 @@ export default function Home() {
             {activeDemo === "page" && <PageDemo />}
             {activeDemo === "picks" && <PicksDemo />}
             {activeDemo === "sift" && <SiftDemo />}
-          </div>
-        </div>
-      </section>
-
-      {/* The feedback loop */}
-      <section className="px-6 py-20 bg-[#f5f5f4]">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-serif text-3xl font-medium mb-4 text-[#1c1917] text-center">
-            The feedback loop
-          </h2>
-          <p className="text-[#57534e] text-center mb-12 max-w-xl mx-auto">
-            Mark it up, feed it back, watch it improve.
-          </p>
-
-          {/* Loop mockup */}
-          <div className="aspect-[21/9] rounded-2xl overflow-hidden border border-[#e7e5e4] shadow-sm">
-            <LoopMockup />
           </div>
         </div>
       </section>
