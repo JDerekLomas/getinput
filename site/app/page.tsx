@@ -25,14 +25,14 @@ export default function Home() {
       <section className="px-6 pt-24 pb-20 bg-gradient-to-b from-[#fef3c7]/30 to-transparent">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-sm font-medium text-[#b45309] tracking-wide uppercase mb-4">
-            Design feedback for the AI era
+            Human-in-the-loop review for AI work
           </p>
           <h1 className="font-serif text-5xl md:text-6xl font-medium mb-6 text-[#1c1917] leading-[1.1]">
-            Get better feedback on<br />AI-generated work
+            Click, edit, approve.<br />Feed it back to Claude.
           </h1>
           <p className="text-xl text-[#57534e] mb-8 leading-relaxed max-w-2xl mx-auto">
-            AI can generate a landing page in seconds. But is the copy right? Are the images good?
-            Get feedback from yourself, your team, or the community — then feed it back to the AI.
+            AI generates a page in seconds. You spot what's off. Mark it up in the browser,
+            and the fixes flow back to your editor as structured feedback.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <a
@@ -58,34 +58,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Social proof placeholder */}
-      <section className="px-6 py-12 border-y border-[#e7e5e4] bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div>
-              <p className="text-3xl font-serif font-medium text-[#1c1917]">—</p>
-              <p className="text-sm text-[#57534e] mt-1">designs reviewed</p>
-            </div>
-            <div>
-              <p className="text-3xl font-serif font-medium text-[#1c1917]">—</p>
-              <p className="text-sm text-[#57534e] mt-1">feedback given</p>
-            </div>
-            <div>
-              <p className="text-3xl font-serif font-medium text-[#1c1917]">—</p>
-              <p className="text-sm text-[#57534e] mt-1">community members</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Three levels of feedback */}
       <section id="how-it-works" className="px-6 py-20">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-3xl font-medium mb-4 text-[#1c1917] text-center">
-            Three ways to get feedback
+            Who reviews it
           </h2>
           <p className="text-[#57534e] text-center mb-12 max-w-xl mx-auto">
-            Start solo, share with your team, or tap into the community. Your choice.
+            Yourself, your team, or the community.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -172,10 +152,10 @@ export default function Home() {
       <section className="px-6 py-20 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-3xl font-medium mb-4 text-[#1c1917] text-center">
-            Three ways to give feedback
+            What you're reviewing
           </h2>
           <p className="text-[#57534e] text-center mb-12 max-w-xl mx-auto">
-            Different content types need different review tools.
+            A page, a set of images, or a batch of generated content.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -338,7 +318,7 @@ export default function Home() {
           {/* Commands */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-[#f5f5f4] rounded-lg p-4">
-              <code className="text-[#b45309] font-mono text-sm font-medium">/input setup</code>
+              <code className="text-[#b45309] font-mono text-sm font-medium">/input page setup</code>
               <p className="text-[#57534e] text-sm mt-1">Add widget to your project</p>
             </div>
             <div className="bg-[#f5f5f4] rounded-lg p-4">
@@ -373,10 +353,10 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <a
-              href="#"
+              href="#install"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#1c1917] rounded-lg font-medium hover:bg-[#f5f5f4] transition"
             >
-              Join waitlist
+              Install the skill
             </a>
             <a
               href="https://github.com/JDerekLomas/getinput"

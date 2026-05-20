@@ -394,10 +394,10 @@ export default function InputWidget({
               disabled={inputCount === 0}
               className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-lg transition ${
                 inputCount > 0
-                  ? "bg-green-600 text-white hover:bg-green-500"
+                  ? "bg-green-600 text-white hover:bg-green-500 animate-pulse ring-2 ring-green-400 ring-offset-2"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
-              title={inputCount > 0 ? "Copy feedback to send back" : "Add feedback first"}
+              title={inputCount > 0 ? "Click to copy feedback and send it back" : "Add feedback first"}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -408,8 +408,8 @@ export default function InputWidget({
           ) : inputCount > 0 ? (
             <button
               onClick={() => setMode("viewing")}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-xs text-gray-600 hover:bg-gray-200 transition border border-gray-200"
-              title="View feedback"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-xs text-gray-600 hover:bg-gray-200 transition border border-gray-200 animate-pulse ring-2 ring-blue-400 ring-offset-2"
+              title="Click to view and share feedback"
             >
               {inputCount}
             </button>
