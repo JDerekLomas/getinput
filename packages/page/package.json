@@ -1,27 +1,32 @@
 {
   "name": "getinput-page",
-  "version": "0.1.0",
-  "description": "Visual page feedback widget for Next.js - edit text inline, leave comments",
+  "version": "0.2.0",
+  "description": "Edit any text on a Next.js page in the browser. Auto-installs a floating widget and an /api/input route.",
   "bin": {
     "getinput-page": "./cli.mjs"
   },
   "files": [
     "InputWidget.tsx",
     "route.ts",
-    "cli.mjs"
+    "cli.mjs",
+    "README.md"
   ],
   "keywords": [
     "feedback",
     "review",
     "nextjs",
     "design",
-    "annotation"
+    "annotation",
+    "claude",
+    "ai",
+    "edit",
+    "contenteditable"
   ],
   "author": "Derek Lomas",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dereklomas/getinput"
+    "url": "https://github.com/JDerekLomas/getinput"
   },
   "homepage": "https://getinput.io"
 }

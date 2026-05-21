@@ -12,6 +12,7 @@ import SiftToolMockup from "@/components/SiftToolMockup";
 import SoloMockup from "@/components/SoloMockup";
 import TeamMockup from "@/components/TeamMockup";
 import HeroMockup from "@/components/HeroMockup";
+import CommandBlock from "@/components/CommandBlock";
 
 type DemoTab = "page" | "picks" | "sift";
 
@@ -260,66 +261,67 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Install skill */}
+      {/* Install */}
       <section id="install" className="px-6 py-20 border-t border-[#e7e5e4] bg-white">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <div className="w-14 h-14 rounded-xl bg-[#f5f5f4] flex items-center justify-center mx-auto mb-4">
-              <span className="font-mono text-lg text-[#57534e]">&gt;_</span>
-            </div>
             <h2 className="font-serif text-3xl font-medium mb-3 text-[#1c1917]">
-              Install the Claude Code skill
+              Install in one command
             </h2>
             <p className="text-[#57534e]">
-              One command to add feedback to any Next.js project.
+              Two paths, depending on what you're building.
             </p>
           </div>
 
-          {/* Install command */}
-          <div className="bg-[#1c1917] rounded-xl p-6 mb-8">
-            <p className="text-[#a8a29e] text-xs mb-2 font-mono">Install the skill:</p>
-            <div className="flex items-center gap-3">
-              <code className="text-white font-mono text-sm flex-1 overflow-x-auto">
-                curl -o ~/.claude/skills/input.md https://raw.githubusercontent.com/JDerekLomas/getinput/main/skill.md
-              </code>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText("curl -o ~/.claude/skills/input.md https://raw.githubusercontent.com/JDerekLomas/getinput/main/skill.md");
-                }}
-                className="text-[#a8a29e] hover:text-white transition p-2"
-                title="Copy to clipboard"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
+          {/* Path 1: Next.js */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-[#b45309] uppercase tracking-wide">Next.js (App Router)</span>
             </div>
+            <CommandBlock command="npx getinput-page" />
+            <p className="text-[#57534e] text-sm mt-3">
+              Copies the widget, adds an <code className="font-mono text-xs bg-[#f5f5f4] px-1 py-0.5 rounded">/api/input</code> route, and mounts <code className="font-mono text-xs bg-[#f5f5f4] px-1 py-0.5 rounded">&lt;InputWidget /&gt;</code> in your root layout. Run <code className="font-mono text-xs bg-[#f5f5f4] px-1 py-0.5 rounded">npm run dev</code> and edit any text.
+            </p>
           </div>
 
-          {/* Commands */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-[#f5f5f4] rounded-lg p-4">
-              <code className="text-[#b45309] font-mono text-sm font-medium">/input page setup</code>
-              <p className="text-[#57534e] text-sm mt-1">Add widget to your project</p>
+          {/* Path 2: Anything else */}
+          <div className="mb-10">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-[#2563eb] uppercase tracking-wide">Plain HTML, Vite, Astro, anything</span>
             </div>
-            <div className="bg-[#f5f5f4] rounded-lg p-4">
-              <code className="text-[#b45309] font-mono text-sm font-medium">/input share</code>
-              <p className="text-[#57534e] text-sm mt-1">Generate link for others to review</p>
-            </div>
-            <div className="bg-[#f5f5f4] rounded-lg p-4">
-              <code className="text-[#b45309] font-mono text-sm font-medium">/input check</code>
-              <p className="text-[#57534e] text-sm mt-1">View pending feedback</p>
-            </div>
-            <div className="bg-[#f5f5f4] rounded-lg p-4">
-              <code className="text-[#b45309] font-mono text-sm font-medium">/input apply</code>
-              <p className="text-[#57534e] text-sm mt-1">Apply edits to source files</p>
-            </div>
+            <CommandBlock command='<script src="https://getinput.io/widget.js"></script>' />
+            <p className="text-[#57534e] text-sm mt-3">
+              Drop it in <code className="font-mono text-xs bg-[#f5f5f4] px-1 py-0.5 rounded">&lt;head&gt;</code>. Edits save to <code className="font-mono text-xs bg-[#f5f5f4] px-1 py-0.5 rounded">localStorage</code>; click the count → <strong>Copy JSON</strong> to export them.
+            </p>
           </div>
 
-          <p className="text-center text-[#a8a29e] text-sm mt-8">
-            Works with any Next.js project. Widget shows on localhost, syncs with Claude Code.
-          </p>
+          {/* Claude Code commands */}
+          <div className="border-t border-[#e7e5e4] pt-10">
+            <p className="text-xs font-medium text-[#a8a29e] uppercase tracking-wide mb-4 text-center">
+              Then in Claude Code
+            </p>
+            <div className="grid md:grid-cols-2 gap-3">
+              <div className="bg-[#f5f5f4] rounded-lg p-4">
+                <code className="text-[#b45309] font-mono text-sm font-medium">/input apply</code>
+                <p className="text-[#57534e] text-sm mt-1">Apply edits to your source files</p>
+              </div>
+              <div className="bg-[#f5f5f4] rounded-lg p-4">
+                <code className="text-[#b45309] font-mono text-sm font-medium">/input check</code>
+                <p className="text-[#57534e] text-sm mt-1">See pending feedback</p>
+              </div>
+              <div className="bg-[#f5f5f4] rounded-lg p-4">
+                <code className="text-[#b45309] font-mono text-sm font-medium">/input share</code>
+                <p className="text-[#57534e] text-sm mt-1">Give someone a review link</p>
+              </div>
+              <div className="bg-[#f5f5f4] rounded-lg p-4">
+                <code className="text-[#b45309] font-mono text-sm font-medium">/input clear</code>
+                <p className="text-[#57534e] text-sm mt-1">Reset feedback</p>
+              </div>
+            </div>
+            <p className="text-center text-[#a8a29e] text-xs mt-6">
+              Install the skill once: <code className="font-mono text-xs">curl -o ~/.claude/skills/input.md https://getinput.io/skill.md</code>
+            </p>
+          </div>
         </div>
       </section>
 

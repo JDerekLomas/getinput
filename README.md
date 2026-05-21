@@ -1,66 +1,63 @@
 # getinput
 
-Human-in-the-loop review tools for AI workflows.
+Edit text directly on the page. Feed the changes back to Claude.
 
-## Tools
+Two installation paths, depending on what you're working on.
 
-| Tool | Purpose | Use case |
-|------|---------|----------|
-| **page** | Spatial web feedback | Click elements, edit text inline, leave comments on live sites |
-| **picks** | Asset selection | Swipe through photos/images, thumbs up/down |
-| **sift** | Generation review | Approve/reject AI outputs with notes for prompt refinement |
-
-## Core principles
-
-1. **Minimal friction** - One click to start, one click to decide
-2. **Accumulates as text** - Copy/paste feedback anytime
-3. **Claude Code readable** - `/input check` shows pending feedback
-4. **Local first** - Works without accounts, stores to JSON
-
-## Usage with Claude Code
-
-```bash
-# Add page feedback widget to current project
-/input page setup
-
-# Check accumulated feedback
-/input check
-
-# Apply text edits automatically
-/input apply
-
-# Clear resolved feedback
-/input clear
-```
-
-## Installation
-
-### Page feedback (Next.js)
+## 1. Next.js (App Router)
 
 ```bash
 npx getinput-page
 ```
 
-Adds:
-- `components/InputWidget.tsx` - floating feedback widget
-- `app/api/input/route.ts` - local JSON storage
-- `input.json` - feedback file (gitignored)
+Adds `components/InputWidget.tsx`, an `app/api/input` route, an `input.json` file, and mounts `<InputWidget />` in your root layout. Run `npm run dev`, then edit any text in the browser.
 
-### Picks (standalone)
+## 2. Any other website
 
-```bash
-npx getinput-picks ./images/*.jpg
+```html
+<script src="https://getinput.io/widget.js"></script>
 ```
 
-Opens a local review UI for the matched files.
+Works on plain HTML, Vite, Astro, Vue, anything. By default, edits save to `localStorage`; click the count badge to copy them as JSON.
 
-### Sift (standalone)
+Optional config via `data-*`:
 
-```bash
-npx getinput-sift ./outputs/
+```html
+<script
+  src="https://getinput.io/widget.js"
+  data-endpoint="/api/feedback"
+  data-hosts="localhost,staging.example.com"
+></script>
 ```
 
-Opens a review UI for AI-generated content with rejection notes.
+## How it actually works
+
+| You | Widget |
+| --- | --- |
+| Click **Edit**, click a heading | Element becomes `contenteditable`, you type the new copy |
+| Click **Comment**, click anything | Type a note about that element |
+| Save / blur | Edit is appended to feedback (localStorage, file, or POSTed to your endpoint) |
+
+Then in Claude Code:
+
+```
+/input apply
+```
+
+Claude reads the feedback and rewrites your source files.
+
+## Sharing for review
+
+Click the count badge, then **Share**. You'll get a `?getinput` URL that anyone can open — no install required on their end. They click around, edit copy, then **Copy feedback** and paste the JSON back to you.
+
+## Repository layout
+
+| Path | Purpose |
+| --- | --- |
+| `packages/page/` | `getinput-page` npm package — Next.js install (`InputWidget.tsx`, `route.ts`, `cli.mjs`) |
+| `site/public/widget.js` | Framework-agnostic widget, served from `getinput.io/widget.js` |
+| `site/` | Marketing site (Next.js) |
+| `skill.md` | Claude Code skill definition |
 
 ## License
 
