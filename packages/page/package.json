@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Edit any text on a Next.js page in the browser. Auto-installs a floating widget and an /api/input route.",
   "bin": {
-    "getinput-page": "./cli.mjs"
+    "getinput-page": "cli.mjs"
   },
   "files": [
     "InputWidget.tsx",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JDerekLomas/getinput"
+    "url": "git+https://github.com/JDerekLomas/getinput.git"
   },
   "homepage": "https://getinput.io"
 }
